@@ -1,4 +1,5 @@
 #include "Utils.h"
+using namespace std;
 
 int evaluate(const ProblemInstance& instance, const std::vector<int>& solution) {
     if (solution.empty()) return 0;
@@ -13,4 +14,44 @@ int evaluate(const ProblemInstance& instance, const std::vector<int>& solution) 
     }
 
     return totalProfit - totalDistance;
+}
+
+
+
+// Function used in greedy approaches
+// Iteratively removes vertices from a full Hamiltonian cycle as long as 
+// their removal strictly improves the overall objective function (profit - distance).
+vector<int> phaseTwoRemoval(const ProblemInstance& instance, vector<int> cycle) {
+	bool improved = true;
+
+	while (improved && cycle.size() > 2) {
+		improved = false;
+		int bestIdx = -1;
+		int maxImprovement = 0;
+
+		for (int idx = 0; idx < cycle.size(); ++idx) {
+			int chosenVrtx = cycle[idx];
+
+			int beforeVrtx = cycle[(idx == 0) ? cycle.size() - 1 : idx - 1];
+			int afterVrtx = cycle[(idx + 1) % cycle.size()];
+
+			int savedDist = instance.distanceMatrix[beforeVrtx][chosenVrtx] +
+				instance.distanceMatrix[chosenVrtx][afterVrtx] -
+				instance.distanceMatrix[beforeVrtx][afterVrtx];
+
+			int improvement = savedDist - instance.profits[chosenVrtx];
+
+			if (improvement > maxImprovement) {
+				maxImprovement = improvement;
+				bestIdx = idx;
+			}
+		}
+
+		if (bestIdx != -1) {
+			cycle.erase(cycle.begin() + bestIdx);
+			improved = true;
+		}
+	}
+
+	return cycle;
 }
