@@ -55,3 +55,19 @@ vector<int> phaseTwoRemoval(const ProblemInstance& instance, vector<int> cycle) 
 
 	return cycle;
 }
+
+
+int calculateCycleLength(const ProblemInstance& instance, const vector<int>& cycle) {
+	if (cycle.empty()) return 0;
+
+	int totalDistance = 0;
+	int n = cycle.size();
+
+	for (int i = 0; i < n; ++i) {
+		int current = cycle[i];
+		int next = cycle[(i + 1) % n];
+		totalDistance += instance.distanceMatrix[current][next];
+	}
+
+	return totalDistance;
+}

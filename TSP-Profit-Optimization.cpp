@@ -2,6 +2,7 @@
 #include "Ingestion.h"
 #include "RandomSolution.h"
 #include "GreedyCycle.h"
+#include "NearestNeighbor.h"
 
 int main()
 {
@@ -25,16 +26,33 @@ int main()
 
 
 
-        std::vector<int> greedySol = greedyCycle(instance,0, true);
+        std::pair<std::vector<int>, int> result = greedyCycle(instance,0, true);
+        std::vector<int> greedySol = result.first;
         score = evaluate(instance, greedySol);
 
-        std::cout << "Solution score: " << score << std::endl;
+        std::cout << "Gready Solution score: " << score << std::endl;
 
-        std::cout << "Solution (length: " << greedySol.size() << "): ";
+        std::cout << "Gready Solution (length: " << greedySol.size() << "): ";
         for (int v : greedySol) {
             std::cout << v << "\n";
         }
         std::cout << "\n";
+
+
+
+
+        result = nearestNeighbor(instance, 0, true);
+        std::vector<int> nnSol = result.first;
+        score = evaluate(instance, nnSol);
+
+        std::cout << "NN Solution score: " << score << std::endl;
+
+        std::cout << "NN Solution (length: " << nnSol.size() << "): ";
+        for (int v : nnSol) {
+            std::cout << v << "\n";
+        }
+        std::cout << "\n";
+
 
     }
     catch (const std::exception& e) {

@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="GreedyCycle.h" />
     <ClInclude Include="Ingestion.h" />
+    <ClInclude Include="NearestNeighbor.h" />
     <ClInclude Include="RandomSolution.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

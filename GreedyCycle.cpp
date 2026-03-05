@@ -12,12 +12,18 @@ vector<int> fullGreedyCycle(const ProblemInstance& instance, int startNode, bool
 	cycle.push_back(startNode);
 	visited[startNode] = true;
 
-	int secondNode = -1; //TODO second node z useProfit
-	int bestDist = 1e9;
+	int secondNode = -1;
+	int bestCost = 1e9;
 	for (int i = 0; i < instance.numVertices; i++) {
-		if (!visited[i] && instance.distanceMatrix[startNode][i] < bestDist) {
-			bestDist = instance.distanceMatrix[startNode][i];
-			secondNode = i;
+		if (!visited[i] ) {
+			int cost =  instance.distanceMatrix[startNode][i];
+			if (useProfit) {
+				cost -= instance.profits[i];
+			}
+			if (cost < bestCost) {
+				bestCost = cost;
+				secondNode = i;
+			}
 		}
 	}
 
@@ -66,7 +72,8 @@ vector<int> fullGreedyCycle(const ProblemInstance& instance, int startNode, bool
 	return cycle;
 }
 
-std::vector<int> greedyCycle(const ProblemInstance& instance, int startNode, bool useProfit) {
-	std::vector<int> fullCycle = fullGreedyCycle(instance, startNode, useProfit);
-	return phaseTwoRemoval(instance, fullCycle);
+pair<vector<int>, int> greedyCycle(const ProblemInstance& instance, int startNode, bool useProfit) {
+	vector<int> fullCycle = fullGreedyCycle(instance, startNode, useProfit);
+	int phaseOneLength = calculateCycleLength(instance, fullCycle);
+	return { phaseTwoRemoval(instance, fullCycle), phaseOneLength };
 }
