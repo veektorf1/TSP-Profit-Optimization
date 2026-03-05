@@ -3,6 +3,7 @@
 #include "RandomSolution.h"
 #include "GreedyCycle.h"
 #include "NearestNeighbor.h"
+#include "Experiments.h"
 
 int main()
 {
@@ -11,6 +12,9 @@ int main()
     // example for running an optimisation alg - later it should be moved to dedicated
     // function with batch functionality
     try {
+
+        startExperiment("TSPB");
+
         ProblemInstance instance = ingestTestInstances("data/TSPB.csv");
 
         std::vector<int> randomRoute = randomSolution(instance.numVertices);
