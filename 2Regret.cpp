@@ -74,8 +74,8 @@ std::vector<int> full2RegretCycle(const ProblemInstance& instance, int startNode
 
 			}
 			if(bestLocalInsertIdx == -1) continue;
-			if(!weighted) regret = secondBestAddingCost - bestAddingCost;
-			else regret = secondBestAddingCost - 2.5*bestAddingCost; // (c2-c1) - 1.5
+			if(!weighted) regret = secondBestAddingCost - bestAddingCost; // c2-c1
+			else regret = secondBestAddingCost - 2*bestAddingCost; // (c2-c1) - c1
 
 			if(regret > bestRegret || (regret == bestRegret && bestAddingCost < bestCandidateAddingCost)){
 				bestRegret = regret;
