@@ -31,6 +31,8 @@ AlgResult runGreedyExperiment(const std::string& name, const std::string& datase
 
 AlgResult runRandomExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, int runCount);
 
+AlgResult run2RegretExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, bool useProfit, bool weighted, int runCount);
+
 void saveStatisticsToCSV(const std::vector<AlgResult>& results, const std::string& filename);
 
 void saveRoutesToCSV(const std::vector<AlgResult>& results, const std::string& bestFilename, const std::string& worstFilename);

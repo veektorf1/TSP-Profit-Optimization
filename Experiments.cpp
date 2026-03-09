@@ -7,6 +7,7 @@
 #include "RandomSolution.h"
 #include "GreedyCycle.h"
 #include "NearestNeighbor.h"
+#include "2Regret.h"
 
 using namespace std;
 
@@ -24,6 +25,13 @@ int startExperiment(string dataset) {
 
 	allResults.push_back(runGreedyExperiment("Greedy Cycle (a)", dataset, instance, greedyCycle, false, numRuns));
 	allResults.push_back(runGreedyExperiment("Greedy Cycle (z)", dataset, instance, greedyCycle, true, numRuns));
+
+	allResults.push_back(run2RegretExperiment("2-Regret (a)", dataset, instance, false, false, numRuns));
+	allResults.push_back(run2RegretExperiment("2-Regret (z)", dataset, instance, true, false, numRuns));
+
+	allResults.push_back(run2RegretExperiment("2-Regret (a) weighted", dataset, instance, false, true, numRuns));
+	allResults.push_back(run2RegretExperiment("2-Regret (z) weighted", dataset, instance, true, true, numRuns));
+
 
 	cout << "Saving results to disk...\n";
 
@@ -123,6 +131,51 @@ AlgResult runRandomExperiment(const string& name, const string& dataset, const P
     result.avgScore = static_cast<double>(sumScore) / runCount;
 
     return result;
+}
+
+AlgResult run2RegretExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, bool useProfit, bool weighted, int runCount){
+
+	cout << "Running algorithm: " + name + " on dataset: " + dataset << endl;
+
+	AlgResult result;
+	result.name = name;
+	result.dataset = dataset;
+
+	long long sumPhase1Length = 0;
+	long long sumScore = 0;
+
+	for (int i = 0; i < runCount; i++) {
+
+		int startNode = i % instance.numVertices;
+
+		auto resultPair = twoRegretCycle(instance, startNode, useProfit, weighted);
+		vector<int> solution = resultPair.first;
+		int phase1Length = resultPair.second;
+
+		int score = evaluate(instance, solution);
+
+		if (phase1Length < result.minPhase1Length) result.minPhase1Length = phase1Length;
+		if (phase1Length > result.maxPhase1Length) result.maxPhase1Length = phase1Length;
+		sumPhase1Length += phase1Length;
+
+
+
+		if (score < result.minScore) {
+			result.minScore = score;
+			result.worstSolution = solution; 
+		}
+		if (score > result.maxScore) {
+			result.maxScore = score;
+			result.bestSolution = solution; 
+		}
+		sumScore += score;
+
+	}
+
+	result.avgPhase1Length = static_cast<double>(sumPhase1Length) / runCount;
+	result.avgScore = static_cast<double>(sumScore) / runCount;
+
+	return result;
 }
 
 void saveStatisticsToCSV(const vector<AlgResult>& results, const string& filename) {
