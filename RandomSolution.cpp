@@ -10,7 +10,7 @@ vector<int> randomSolution(int numVertices) {
     static random_device rd;
     static mt19937 gen(rd()); 
 
-    uniform_int_distribution<> distK(1, numVertices);
+    uniform_int_distribution<> distK(2, numVertices);
     int k = distK(gen);
 
     //Creating index list of indices

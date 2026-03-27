@@ -81,6 +81,7 @@ std::vector<int> full2RegretCycle(const ProblemInstance& instance, int startNode
 				bestRegret = regret;
 				bestVrtx = v;
 				bestInsertIdx = bestLocalInsertIdx;
+				bestCandidateAddingCost = bestAddingCost;
 			}
 
 		}
