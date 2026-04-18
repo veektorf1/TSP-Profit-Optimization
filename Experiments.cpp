@@ -47,32 +47,37 @@ int startExperiment(string dataset) {
 		allResults.push_back(res);
 		};
 
-	runAndLog(run2RegretExperiment("2-Regret (a)", dataset, instance, false, false, numRuns));
+	
+	// runAndLog(run2RegretExperiment("2-Regret (a)", dataset, instance, false, false, numRuns));
 
-	runAndLog(runLocalSearchExperiment("Steepest - Node Swap - Random", dataset, instance, SearchType::STEEPEST, NeighborhoodType::NODE_SWAP, false, numRuns));
-	runAndLog(runLocalSearchExperiment("Steepest - Edge Swap - Random", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, false, numRuns));
+	// runAndLog(runLocalSearchExperiment("Steepest - Node Swap - Random", dataset, instance, SearchType::STEEPEST, NeighborhoodType::NODE_SWAP, false, numRuns));
+	// runAndLog(runLocalSearchExperiment("Steepest - Edge Swap - Random", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, false, numRuns));
 
-	runAndLog(runLocalSearchExperiment("Steepest - Node Swap - Heuristic", dataset, instance, SearchType::STEEPEST, NeighborhoodType::NODE_SWAP, true, numRuns));
-	runAndLog(runLocalSearchExperiment("Steepest - Edge Swap - Heuristic", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, true, numRuns));
+	// runAndLog(runLocalSearchExperiment("Steepest - Node Swap - Heuristic", dataset, instance, SearchType::STEEPEST, NeighborhoodType::NODE_SWAP, true, numRuns));
+	// runAndLog(runLocalSearchExperiment("Steepest - Edge Swap - Heuristic", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, true, numRuns));
 
-	runAndLog(runLocalSearchExperiment("Greedy - Node Swap - Random", dataset, instance, SearchType::GREEDY, NeighborhoodType::NODE_SWAP, false, numRuns));
-	runAndLog(runLocalSearchExperiment("Greedy - Edge Swap - Random", dataset, instance, SearchType::GREEDY, NeighborhoodType::EDGE_SWAP, false, numRuns));
+	// runAndLog(runLocalSearchExperiment("Greedy - Node Swap - Random", dataset, instance, SearchType::GREEDY, NeighborhoodType::NODE_SWAP, false, numRuns));
+	// runAndLog(runLocalSearchExperiment("Greedy - Edge Swap - Random", dataset, instance, SearchType::GREEDY, NeighborhoodType::EDGE_SWAP, false, numRuns));
 
-	runAndLog(runLocalSearchExperiment("Greedy - Node Swap - Heuristic", dataset, instance, SearchType::GREEDY, NeighborhoodType::NODE_SWAP, true, numRuns));
-	runAndLog(runLocalSearchExperiment("Greedy - Edge Swap - Heuristic", dataset, instance, SearchType::GREEDY, NeighborhoodType::EDGE_SWAP, true, numRuns));
+	// runAndLog(runLocalSearchExperiment("Greedy - Node Swap - Heuristic", dataset, instance, SearchType::GREEDY, NeighborhoodType::NODE_SWAP, true, numRuns));
+	// runAndLog(runLocalSearchExperiment("Greedy - Edge Swap - Heuristic", dataset, instance, SearchType::GREEDY, NeighborhoodType::EDGE_SWAP, true, numRuns));
 
 
-	double maxAvgTimeMs = 0;
-	for (const auto& res : allResults) {
-		if (res.avgTimeMs > maxAvgTimeMs) {
-			maxAvgTimeMs = res.avgTimeMs;
-		}
-	}
+	// double maxAvgTimeMs = 0;
+	// for (const auto& res : allResults) {
+	// 	if (res.avgTimeMs > maxAvgTimeMs) {
+	// 		maxAvgTimeMs = res.avgTimeMs;
+	// 	}
+	// }
 
-	cout << "Slowest LS algorithm run for " << maxAvgTimeMs << " ms in average." << endl;
+	// cout << "Slowest LS algorithm run for " << maxAvgTimeMs << " ms in average." << endl;
 
-	// --- URUCHOMIENIE RANDOM WALK ---
-	runAndLog(runRandomWalkExperiment("Random Walk", dataset, instance, NeighborhoodType::EDGE_SWAP, maxAvgTimeMs, numRuns));
+	// runAndLog(runRandomWalkExperiment("Random Walk", dataset, instance, NeighborhoodType::EDGE_SWAP, maxAvgTimeMs, numRuns));
+
+
+	//runAndLog(run2RegretExperiment("2-Regret (a)", dataset, instance, false, false, numRuns));
+	//runAndLog(runLocalSearchExperiment("Steepest - Edge Swap - Random", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, false, numRuns));
+	runAndLog(runLocalSearchExperiment("Steepest LM - Edge Swap - Random", dataset, instance, SearchType::STEEPEST_LM, NeighborhoodType::EDGE_SWAP, false, numRuns));
 
 
 

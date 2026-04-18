@@ -119,6 +119,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,20 +129,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="2Regret.cpp" />
     <ClCompile Include="Experiments.cpp" />
     <ClCompile Include="GreedyCycle.cpp" />
     <ClCompile Include="Ingestion.cpp" />
+    <ClCompile Include="LocalSearch.cpp" />
+    <ClCompile Include="LocalSearchLM.cpp" />
     <ClCompile Include="NearestNeighbor.cpp" />
     <ClCompile Include="RandomSolution.cpp" />
+    <ClCompile Include="RandomWalk.cpp" />
     <ClCompile Include="TSP-Profit-Optimization.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="2Regret.h" />
     <ClInclude Include="Experiments.h" />
     <ClInclude Include="GreedyCycle.h" />
     <ClInclude Include="Ingestion.h" />
+    <ClInclude Include="LocalSearch.h" />
+    <ClInclude Include="LocalSearchLM.h" />
     <ClInclude Include="NearestNeighbor.h" />
     <ClInclude Include="RandomSolution.h" />
+    <ClInclude Include="RandomWalk.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

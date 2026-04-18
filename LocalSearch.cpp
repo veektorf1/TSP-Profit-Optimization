@@ -1,4 +1,5 @@
 #include "LocalSearch.h"
+#include "LocalSearchLM.h"
 
 using namespace std;
 
@@ -15,7 +16,10 @@ vector<int> localSearch(const ProblemInstance& instance, vector<int> initialSolu
         localSearchSteepest(instance, cycle, inCycle, neighborhoodType);
     }
     else if (searchType == SearchType::GREEDY) {
-           localSearchGreedy(instance, cycle, inCycle, neighborhoodType);
+        localSearchGreedy(instance, cycle, inCycle, neighborhoodType);
+    }
+    else if (searchType == SearchType::STEEPEST_LM) {
+        localSearchSteepestLM(instance, cycle, inCycle);
     }
 
     return cycle;
@@ -222,7 +226,7 @@ double calcDeltaAdd(const ProblemInstance& instance, const vector<int>& cycle, i
 
 
 double calcDeltaSwapNodes(const ProblemInstance& instance, const vector<int>& cycle, int i, int j) { 
-    // We assume that i is always smalle than j
+    // We assume that i is always smaller than j
     // Because thats how it is returned by generateNeighborhoodMoves()
     int n = cycle.size();
     if (n <= 2) return 0;
