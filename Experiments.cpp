@@ -10,6 +10,7 @@
 #include "2Regret.h"
 #include "LocalSearch.h"
 #include "RandomWalk.h"
+#include "LocalSearchLM.h"
 #include <chrono>
 
 
@@ -78,6 +79,7 @@ int startExperiment(string dataset) {
 	//runAndLog(run2RegretExperiment("2-Regret (a)", dataset, instance, false, false, numRuns));
 	//runAndLog(runLocalSearchExperiment("Steepest - Edge Swap - Random", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, false, numRuns));
 	runAndLog(runLocalSearchExperiment("Steepest LM - Edge Swap - Random", dataset, instance, SearchType::STEEPEST_LM, NeighborhoodType::EDGE_SWAP, false, numRuns));
+	runAndLog(runLocalSearchExperiment("CL - Edge Swap - Random", dataset, instance, SearchType::CL, NeighborhoodType::EDGE_SWAP, false, numRuns));
 
 
 

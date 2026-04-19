@@ -1,5 +1,6 @@
 #include "LocalSearch.h"
 #include "LocalSearchLM.h"
+#include "LocalSearchCL.h"
 
 using namespace std;
 
@@ -20,6 +21,9 @@ vector<int> localSearch(const ProblemInstance& instance, vector<int> initialSolu
     }
     else if (searchType == SearchType::STEEPEST_LM) {
         localSearchSteepestLM(instance, cycle, inCycle);
+    }
+    else if(searchType == SearchType::CL) {
+        localSearchCL(instance, cycle, inCycle);
     }
 
     return cycle;

@@ -6,7 +6,8 @@
 enum class SearchType {
     GREEDY,
     STEEPEST,
-    STEEPEST_LM
+    STEEPEST_LM,
+    CL
 };
 
 enum class NeighborhoodType {
