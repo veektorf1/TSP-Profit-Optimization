@@ -15,7 +15,8 @@ std::vector<std::vector<int>> TopCandidates(const ProblemInstance& instance, int
             distances.push_back({instance.distanceMatrix[v1][v2], v2});
         }
         
-        partial_sort(distances.begin(), distances.begin() + numCandidates, distances.end());
+        int limit = std::min((int)distances.size(), numCandidates);
+        partial_sort(distances.begin(), distances.begin() + limit, distances.end());
         vector<int> bestNeighbors;
 
         for(int i=0; i < numCandidates && i < distances.size(); ++i){
@@ -66,6 +67,18 @@ void localSearchCL(const ProblemInstance& instance, std::vector<int>& cycle, std
                             bestMove = {MoveType::SWAP_EDGES_INTRA, i, j};
                         }
                     }
+
+                    int i_prev = (posInCycle[n1] - 1 + n) % n;
+                    int j_prev = (posInCycle[n2] - 1 + n) % n;
+                    if (i_prev > j_prev) std::swap(i_prev, j_prev);
+
+                    if (i_prev != j_prev && j_prev != i_prev + 1 && !(i_prev == 0 && j_prev == n - 1)) {
+                        double deltaPrev = calcDeltaSwapEdges(instance, cycle, i_prev, j_prev);
+                        if (deltaPrev > bestDelta) {
+                            bestDelta = deltaPrev;
+                            bestMove = {MoveType::SWAP_EDGES_INTRA, i_prev, j_prev};
+                        }
+                    }
                 }
                 else if (n1_in && !n2_in) {
                     // n1 jest w cyklu, n2 poza. wrzucamy n2 do cyklu w miejscu n1 przed lub za n1
@@ -83,6 +96,22 @@ void localSearchCL(const ProblemInstance& instance, std::vector<int>& cycle, std
                     if (deltaBefore > bestDelta) {
                         bestDelta = deltaBefore;
                         bestMove = {MoveType::ADD_NODE, n2, prev_i};
+                    }
+                }
+                else if (!n1_in && n2_in) {
+                    int j = posInCycle[n2];
+
+                    double deltaAfter = calcDeltaAdd(instance, cycle, n1, j);
+                    if (deltaAfter > bestDelta) {
+                        bestDelta = deltaAfter;
+                        bestMove = {MoveType::ADD_NODE, n1, j};
+                    }
+
+                    int prev_j = (j - 1 + n) % n;
+                    double deltaBefore = calcDeltaAdd(instance, cycle, n1, prev_j);
+                    if (deltaBefore > bestDelta) {
+                        bestDelta = deltaBefore;
+                        bestMove = {MoveType::ADD_NODE, n1, prev_j};
                     }
                 }
             

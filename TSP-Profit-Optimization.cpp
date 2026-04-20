@@ -14,7 +14,7 @@ int main()
     // function with batch functionality
     try {
 
-        startExperiment("TSPB");
+        startExperiment("TSPA");
 
         //ProblemInstance instance = ingestTestInstances("data/TSPB.csv");
 

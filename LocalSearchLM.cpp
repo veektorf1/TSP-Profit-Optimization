@@ -8,6 +8,9 @@ void localSearchSteepestLM(const ProblemInstance& instance, vector<int>& cycle, 
     vector<RememberedMove> LM;
     auto generateMovesAndPushToLM = [&]() {
         //LM.clear();
+        LM.erase(std::remove_if(LM.begin(), LM.end(), 
+                 [](const RememberedMove& rm) { return rm.delta < 0.0; }), 
+                 LM.end());
         vector<Move> neighborhood = generateNeighborhoodMoves(cycle, inCycle, instance.numVertices, NeighborhoodType::EDGE_SWAP);
         
         for (const Move& move : neighborhood) {
@@ -77,10 +80,16 @@ void localSearchSteepestLM(const ProblemInstance& instance, vector<int>& cycle, 
         bool moveFound = false;
 
         for (auto it = LM.begin(); it != LM.end(); ) {
+            if (it->delta < 0) {
+                ++it;
+                continue;
+            }
+
             int status = checkIfMoveLegal(cycle, posInCycle, *it); 
 
             if (status == -1) {
-                it = LM.erase(it);
+                it->delta = -1.0;
+                ++it;
             }
             else if (status == 0) {
                 ++it;
@@ -93,7 +102,7 @@ void localSearchSteepestLM(const ProblemInstance& instance, vector<int>& cycle, 
                 std::fill(posInCycle.begin(), posInCycle.end(), -1);
                 for (int idx = 0; idx < cycle.size(); ++idx) posInCycle[cycle[idx]] = idx;
 
-                LM.erase(it);
+                it->delta = -1.0;
                 moveFound = true;
                 wasJustGenerated = false;
                 break;
