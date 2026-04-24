@@ -11,6 +11,7 @@
 #include "LocalSearch.h"
 #include "RandomWalk.h"
 #include "LocalSearchLM.h"
+#include "MultiStartLocalSearch.h"
 #include <chrono>
 
 
@@ -354,6 +355,60 @@ AlgResult runLocalSearchExperiment(
 
 	return result;
 }
+
+AlgResult runMultiStartLocalSearchExperiment(
+	const std::string& name, 
+	const std::string& dataset, const ProblemInstance& instance, 
+	SearchType searchType, 
+	NeighborhoodType neighborhoodType, 
+	int numLocalSearch, 
+	int runCount
+) {
+
+
+	cout << "Running Multi-Start LS algorithm: " << name << " on dataset: " << dataset << endl;
+
+	AlgResult result;
+	result.name = name;
+	result.dataset = dataset;
+
+	long long sumScore = 0;
+	long long sumTimeUs = 0; 
+
+	for (int i = 0; i < runCount; i++) {
+		
+		auto startTime = chrono::high_resolution_clock::now();
+
+		vector<int> finalSolution = multiStartLocalSearch(instance, searchType, neighborhoodType, numLocalSearch);
+		// it returns the best solution found in numLocalSearch number of local searches, each starting from a different random solution
+
+		auto endTime = chrono::high_resolution_clock::now();
+		auto durationUs = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
+		double durationMs = durationUs / 1000.0;
+		if (durationMs < result.minTimeMs) result.minTimeMs = durationMs;
+		if (durationMs > result.maxTimeMs) result.maxTimeMs = durationMs;
+
+		int score = evaluate(instance, finalSolution);
+
+		if (score < result.minScore) {
+			result.minScore = score;
+			result.worstSolution = finalSolution;
+		}
+		if (score > result.maxScore) {
+			result.maxScore = score;
+			result.bestSolution = finalSolution;
+		}
+
+		sumScore += score;
+		sumTimeUs += durationUs;
+	}
+
+	result.avgScore = static_cast<double>(sumScore) / runCount;
+	result.avgTimeMs = static_cast<double>(sumTimeUs) / (runCount * 1000.0); 
+
+	return result;
+}
+
 
 
 void saveGreedyStatisticsToCSV(const vector<AlgResult>& results, const string& filename) {
