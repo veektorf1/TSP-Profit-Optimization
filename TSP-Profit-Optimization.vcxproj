@@ -136,6 +136,7 @@
     <ClCompile Include="LocalSearch.cpp" />
     <ClCompile Include="LocalSearchCL.cpp" />
     <ClCompile Include="LocalSearchLM.cpp" />
+    <ClCompile Include="MultiStartLocalSearch.cpp" />
     <ClCompile Include="NearestNeighbor.cpp" />
     <ClCompile Include="RandomSolution.cpp" />
     <ClCompile Include="RandomWalk.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="LocalSearch.h" />
     <ClInclude Include="LocalSearchCL.h" />
     <ClInclude Include="LocalSearchLM.h" />
+    <ClInclude Include="MultiStartLocalSearch.h" />
     <ClInclude Include="NearestNeighbor.h" />
     <ClInclude Include="RandomSolution.h" />
     <ClInclude Include="RandomWalk.h" />

@@ -76,14 +76,17 @@ int startExperiment(string dataset) {
 
 	// runAndLog(runRandomWalkExperiment("Random Walk", dataset, instance, NeighborhoodType::EDGE_SWAP, maxAvgTimeMs, numRuns));
 
+	//TODO zmodyfikować aby wszystkie local search startowały od tych samych rozwiazań<?>
+	
+	// Move lists
+	// runAndLog(run2RegretExperiment("2-Regret (a)", dataset, instance, false, false, numRuns));
+	// runAndLog(runLocalSearchExperiment("Steepest - Edge Swap - Random", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, false, numRuns));
+	// runAndLog(runLocalSearchExperiment("Steepest LM - Edge Swap - Random", dataset, instance, SearchType::STEEPEST_LM, NeighborhoodType::EDGE_SWAP, false, numRuns));
+	// runAndLog(runLocalSearchExperiment("CL - Edge Swap - Random", dataset, instance, SearchType::CL, NeighborhoodType::EDGE_SWAP, false, numRuns));
 
-	runAndLog(run2RegretExperiment("2-Regret (a)", dataset, instance, false, false, numRuns));
-	runAndLog(runLocalSearchExperiment("Steepest - Edge Swap - Random", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, false, numRuns));
-	runAndLog(runLocalSearchExperiment("Steepest LM - Edge Swap - Random", dataset, instance, SearchType::STEEPEST_LM, NeighborhoodType::EDGE_SWAP, false, numRuns));
-	runAndLog(runLocalSearchExperiment("CL - Edge Swap - Random", dataset, instance, SearchType::CL, NeighborhoodType::EDGE_SWAP, false, numRuns));
 
-
-
+	numRuns = 20;
+	runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
 	cout << "Saving results to disk...\n";
 
 	string folder = "results/" + dataset;
