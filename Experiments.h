@@ -45,6 +45,8 @@ AlgResult runLocalSearchExperiment(const std::string& name, const std::string& d
 
 AlgResult runMultiStartLocalSearchExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, int numLocalSearch, int runCount);
 
+AlgResult runIteratedLocalSearchExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, int localSearchTimeLimit, int numPerturbations, int runCount);
+
 
 void saveGreedyStatisticsToCSV(const std::vector<AlgResult>& results, const std::string& filename);
 
