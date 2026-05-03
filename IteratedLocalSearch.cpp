@@ -8,10 +8,11 @@
 
 using namespace std;
 
-std::vector<int> perturbateILS(const std::vector<int>& cycle, const ProblemInstance& instance, int numPerturbations = 2) {
+std::vector<int> perturbateILS(const std::vector<int>& cycle, const ProblemInstance& instance, int percentagePerturbations = 2) {
     std::vector<int> newCycle = cycle;
     int n = cycle.size();
-    if (n <= 2) return newCycle; 
+    if (n <= 2) return newCycle;
+    int numPerturbations = max(1,(n*percentagePerturbations)/100);
 
     for(int i=0; i<= numPerturbations; ++i){
         n = newCycle.size();
@@ -21,17 +22,17 @@ std::vector<int> perturbateILS(const std::vector<int>& cycle, const ProblemInsta
             // edge swap
             int idx1 = rand() % n;
             int idx2 = rand() % n;
-            while(idx2 == idx1 || abs(idx2 - idx1) == 1 || abs(idx2 - idx1) == n-1){
-                idx2 = rand() % n;
+            if(idx1==idx2 || idx1 == (idx2 + 1) % n || idx2 == (idx1 + 1) % n){
+                idx2 = (idx1 + 2) % n;
             }
-            swap(newCycle[idx1], newCycle[idx2]);
+            reverse(newCycle.begin() + min(idx1,idx2) + 1, newCycle.begin() + max(idx1,idx2) + 1);
         }
         else if(drawPerturbation == 1){
             // node swap
             int idx1 = rand() % n;
             int idx2 = rand() % n;
-            while(idx2 == idx1){
-                idx2 = rand() % n;
+            if(idx1 == idx2){
+                idx2 = (idx1 + 1) % n;
             }
             swap(newCycle[idx1], newCycle[idx2]);
         }
@@ -44,13 +45,13 @@ std::vector<int> perturbateILS(const std::vector<int>& cycle, const ProblemInsta
     return newCycle;
 }
 
-std::vector<int> IteratedLocalSearch(const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, int localSearchTimeLimit, int numPerturbations) {
+std::vector<int> IteratedLocalSearch(const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, int localSearchTimeLimit, int percentagePerturbations) {
     std::vector<int> bestCycle = localSearch(instance, randomSolution(instance.numVertices), searchType, neighborhoodType);
     int bestProfit = evaluate(instance, bestCycle);
     
     auto startTime = chrono::high_resolution_clock::now();
     while(chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() < localSearchTimeLimit){
-        std::vector<int> perturbatedCycle = perturbateILS(bestCycle, instance, numPerturbations);
+        std::vector<int> perturbatedCycle = perturbateILS(bestCycle, instance, percentagePerturbations);
         std::vector<int> perturbatedLocalSearch = localSearch(instance, perturbatedCycle, searchType, neighborhoodType);
         int profit = evaluate(instance, perturbatedLocalSearch);
         if(profit > bestProfit){

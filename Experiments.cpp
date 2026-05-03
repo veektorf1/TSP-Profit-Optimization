@@ -423,7 +423,7 @@ AlgResult runIteratedLocalSearchExperiment(
 	SearchType searchType, 
 	NeighborhoodType neighborhoodType, 
 	int localSearchTimeLimit, 
-	int numPerturbations,
+	int percentagePerturbations,
 	int runCount
 ) {
 	cout << "Running Iterated Local Search algorithm: " << name << " on dataset: " << dataset << endl;
@@ -439,7 +439,7 @@ AlgResult runIteratedLocalSearchExperiment(
 		
 		auto startTime = chrono::high_resolution_clock::now();
 
-		vector<int> finalSolution = IteratedLocalSearch(instance, searchType, neighborhoodType, localSearchTimeLimit, numPerturbations);
+		vector<int> finalSolution = IteratedLocalSearch(instance, searchType, neighborhoodType, localSearchTimeLimit, percentagePerturbations);
 
 		auto endTime = chrono::high_resolution_clock::now();
 		auto durationUs = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
