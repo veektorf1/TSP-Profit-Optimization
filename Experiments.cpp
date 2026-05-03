@@ -13,6 +13,7 @@
 #include "LocalSearchLM.h"
 #include "MultiStartLocalSearch.h"
 #include "IteratedLocalSearch.h"
+#include "LargeNeighborhoodLocalSearch.h"
 #include <chrono>
 
 
@@ -87,9 +88,14 @@ int startExperiment(string dataset) {
 
 
 	numRuns = 20;
-	runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
+	// runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
 	// ze statystyk wynika ze sredni czas MLSL to 25205ms dlatego w ILS dajemy wlasnie taki limit zgodnie z trescia zadania
-	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 2, numRuns)); 
+	// runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - 3% perturbation", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 3, numRuns)); 
+	// runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - 4% perturbation", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 4, numRuns)); 
+	// runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - 5% perturbation", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 5, numRuns));
+	runAndLog(runLocalNeighborhoodSearchExperiment("LNS - Steepest - Edge Swap - 4% perturbation RANDOM REMOVAL", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::RANDOM_REMOVAL, 25205, 4, 5));
+	runAndLog(runLocalNeighborhoodSearchExperiment("LNS - Steepest - Edge Swap - 4% perturbation WORST EDGES REMOVAL", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_EDGES_REMOVAL, 25205, 4, 5));
+	
 	
 	cout << "Saving results to disk...\n";
 
@@ -440,6 +446,49 @@ AlgResult runIteratedLocalSearchExperiment(
 		auto startTime = chrono::high_resolution_clock::now();
 
 		vector<int> finalSolution = IteratedLocalSearch(instance, searchType, neighborhoodType, localSearchTimeLimit, percentagePerturbations);
+
+		auto endTime = chrono::high_resolution_clock::now();
+		auto durationUs = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
+		double durationMs = durationUs / 1000.0;
+		if (durationMs < result.minTimeMs) result.minTimeMs = durationMs;
+		if (durationMs > result.maxTimeMs) result.maxTimeMs = durationMs;
+
+		int score = evaluate(instance, finalSolution);
+
+		if (score < result.minScore) {
+			result.minScore = score;
+			result.worstSolution = finalSolution;
+		}
+		if (score > result.maxScore) {
+			result.maxScore = score;
+			result.bestSolution = finalSolution;
+		}
+
+		sumScore += score;
+		sumTimeUs += durationUs;
+	}
+
+	result.avgScore = static_cast<double>(sumScore) / runCount;
+	result.avgTimeMs = static_cast<double>(sumTimeUs) / (runCount * 1000.0); 
+
+	return result;
+}
+
+AlgResult runLocalNeighborhoodSearchExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, DestroyType destroyType, int localSearchTimeLimit, int percentagePerturbations, int runCount){
+	cout << "Running Local Neighborhood Search algorithm: " << name << " on dataset: " << dataset << endl;
+
+	AlgResult result;
+	result.name = name;
+	result.dataset = dataset;
+
+	long long sumScore = 0;
+	long long sumTimeUs = 0; 
+
+	for (int i = 0; i < runCount; i++) {
+		
+		auto startTime = chrono::high_resolution_clock::now();
+
+		vector<int> finalSolution = LargeNeighborhoodLocalSearch(instance, searchType, neighborhoodType, destroyType, localSearchTimeLimit, percentagePerturbations);
 
 		auto endTime = chrono::high_resolution_clock::now();
 		auto durationUs = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
