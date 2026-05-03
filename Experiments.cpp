@@ -88,14 +88,19 @@ int startExperiment(string dataset) {
 
 
 	numRuns = 20;
-	// runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
+	runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
 	// ze statystyk wynika ze sredni czas MLSL to 25205ms dlatego w ILS dajemy wlasnie taki limit zgodnie z trescia zadania
-	// runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - 3% perturbation", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 3, numRuns)); 
-	// runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - 4% perturbation", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 4, numRuns)); 
-	// runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - 5% perturbation", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 5, numRuns));
+	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 2, numRuns)); 
+	
+	double mslsAvgTimeMs = allResults.back().avgTimeMs;
+	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 2, numRuns));
+	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap5", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 5, numRuns));
+	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap10", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 10, numRuns));
+	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap20", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 20, numRuns));
+	cout << "Saving results to disk...\n";
+
 	runAndLog(runLocalNeighborhoodSearchExperiment("LNS - Steepest - Edge Swap - 4% perturbation RANDOM REMOVAL", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::RANDOM_REMOVAL, 25205, 4, 5));
 	runAndLog(runLocalNeighborhoodSearchExperiment("LNS - Steepest - Edge Swap - 4% perturbation WORST EDGES REMOVAL", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_EDGES_REMOVAL, 25205, 4, 5));
-	
 	
 	cout << "Saving results to disk...\n";
 
@@ -428,7 +433,7 @@ AlgResult runIteratedLocalSearchExperiment(
 	const ProblemInstance& instance, 
 	SearchType searchType, 
 	NeighborhoodType neighborhoodType, 
-	int localSearchTimeLimit, 
+	double localSearchTimeLimit, 
 	int percentagePerturbations,
 	int runCount
 ) {

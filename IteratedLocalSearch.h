@@ -4,5 +4,5 @@
 #include "Utils.h"
 #include "LocalSearch.h"
 
-std::vector<int> perturbateILS(const std::vector<int>& cycle, const ProblemInstance& instance, int percentagePerturbations);
-std::vector<int> IteratedLocalSearch(const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, int localSearchTimeLimit, int percentagePerturbations);
+std::vector<int> perturbateILS(const std::vector<int>& cycle, const ProblemInstance& instance, int numPerturbations);
+std::vector<int> IteratedLocalSearch(const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, double localSearchTimeLimit, int numPerturbations);
