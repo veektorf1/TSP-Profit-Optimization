@@ -7,7 +7,9 @@
 
 enum class DestroyType {
     RANDOM_REMOVAL,
-    WORST_EDGES_REMOVAL
+    WORST_EDGES_REMOVAL,
+    WORST_SUBPATH_REMOVAL
+
 };
 
-std::vector<int> LargeNeighborhoodLocalSearch(const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, DestroyType destroyType, int localSearchTimeLimit, int percentagePerturbations);
+std::pair<std::vector<int>, int> LargeNeighborhoodLocalSearch(const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, DestroyType destroyType, double localSearchTimeLimit, int percentagePerturbations, bool runLocalSearchInLoop);

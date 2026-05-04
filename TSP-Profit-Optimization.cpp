@@ -15,6 +15,7 @@ int main()
     try {
 
         startExperiment("TSPA");
+        startExperiment("TSPB");
 
         //ProblemInstance instance = ingestTestInstances("data/TSPB.csv");
 

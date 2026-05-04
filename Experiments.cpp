@@ -90,18 +90,24 @@ int startExperiment(string dataset) {
 	numRuns = 20;
 	runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
 	// ze statystyk wynika ze sredni czas MLSL to 25205ms dlatego w ILS dajemy wlasnie taki limit zgodnie z trescia zadania
-	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 2, numRuns)); 
+	//runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 2, numRuns)); 
 	
 	double mslsAvgTimeMs = allResults.back().avgTimeMs;
-	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 2, numRuns));
-	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap5", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 5, numRuns));
-	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap10", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 10, numRuns));
-	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap20", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 20, numRuns));
-	cout << "Saving results to disk...\n";
-
-	runAndLog(runLocalNeighborhoodSearchExperiment("LNS - Steepest - Edge Swap - 4% perturbation RANDOM REMOVAL", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::RANDOM_REMOVAL, 25205, 4, 5));
-	runAndLog(runLocalNeighborhoodSearchExperiment("LNS - Steepest - Edge Swap - 4% perturbation WORST EDGES REMOVAL", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_EDGES_REMOVAL, 25205, 4, 5));
+	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 5, numRuns));
 	
+
+	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% RANDOM", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::RANDOM_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
+	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% WORST", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_EDGES_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
+
+	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% RANDOM", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::RANDOM_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
+	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% WORST", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_EDGES_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
+
+
+	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% WORST Subpath Removal", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
+
+	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% WORST Subpath Removal", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
+
+
 	cout << "Saving results to disk...\n";
 
 	string folder = "results/" + dataset;
@@ -450,7 +456,9 @@ AlgResult runIteratedLocalSearchExperiment(
 		
 		auto startTime = chrono::high_resolution_clock::now();
 
-		vector<int> finalSolution = IteratedLocalSearch(instance, searchType, neighborhoodType, localSearchTimeLimit, percentagePerturbations);
+		auto resultPair = IteratedLocalSearch(instance, searchType, neighborhoodType, localSearchTimeLimit, percentagePerturbations);
+		vector<int> finalSolution = resultPair.first;
+		int iterations = resultPair.second;
 
 		auto endTime = chrono::high_resolution_clock::now();
 		auto durationUs = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
@@ -471,15 +479,17 @@ AlgResult runIteratedLocalSearchExperiment(
 
 		sumScore += score;
 		sumTimeUs += durationUs;
+		result.avgIterations += iterations;
 	}
 
 	result.avgScore = static_cast<double>(sumScore) / runCount;
 	result.avgTimeMs = static_cast<double>(sumTimeUs) / (runCount * 1000.0); 
+	result.avgIterations = result.avgIterations / runCount;
 
 	return result;
 }
 
-AlgResult runLocalNeighborhoodSearchExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, DestroyType destroyType, int localSearchTimeLimit, int percentagePerturbations, int runCount){
+AlgResult runLocalNeighborhoodSearchExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, DestroyType destroyType, double localSearchTimeLimit, int percentagePerturbations, int runCount, bool runLocalSearchInLoop){
 	cout << "Running Local Neighborhood Search algorithm: " << name << " on dataset: " << dataset << endl;
 
 	AlgResult result;
@@ -493,7 +503,9 @@ AlgResult runLocalNeighborhoodSearchExperiment(const std::string& name, const st
 		
 		auto startTime = chrono::high_resolution_clock::now();
 
-		vector<int> finalSolution = LargeNeighborhoodLocalSearch(instance, searchType, neighborhoodType, destroyType, localSearchTimeLimit, percentagePerturbations);
+		auto resultPair = LargeNeighborhoodLocalSearch(instance, searchType, neighborhoodType, destroyType, localSearchTimeLimit, percentagePerturbations, runLocalSearchInLoop);
+		vector<int> finalSolution = resultPair.first;
+		int iterations = resultPair.second;
 
 		auto endTime = chrono::high_resolution_clock::now();
 		auto durationUs = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
@@ -514,10 +526,12 @@ AlgResult runLocalNeighborhoodSearchExperiment(const std::string& name, const st
 
 		sumScore += score;
 		sumTimeUs += durationUs;
+		result.avgIterations += iterations;
 	}
 
 	result.avgScore = static_cast<double>(sumScore) / runCount;
 	result.avgTimeMs = static_cast<double>(sumTimeUs) / (runCount * 1000.0); 
+	result.avgIterations = result.avgIterations / runCount;
 
 	return result;
 }
@@ -553,7 +567,7 @@ void saveStatisticsToCSV(const vector<AlgResult>& results, const string& filenam
 		return;
 	}
 
-	file << "Algorithm;Dataset;Min_Score;Avg_Score;Max_Score;Min_Time_ms;Avg_Time_ms;Max_Time_ms\n";
+	file << "Algorithm;Dataset;Min_Score;Avg_Score;Max_Score;Min_Time_ms;Avg_Time_ms;Max_Time_ms;Avg_Iterations\n";
 
 	for (const auto& res : results) {
 		file << res.name << ";"
@@ -563,7 +577,8 @@ void saveStatisticsToCSV(const vector<AlgResult>& results, const string& filenam
 			<< res.maxScore << ";"
 			<< res.minTimeMs << ";"
 			<< res.avgTimeMs << ";"
-			<< res.maxTimeMs << "\n";
+			<< res.maxTimeMs << ";"
+			<< res.avgIterations << "\n";
 	}
 
 	file.close();

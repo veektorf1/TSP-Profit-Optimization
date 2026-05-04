@@ -94,7 +94,7 @@ std::vector<int> full2RegretCycle(const ProblemInstance& instance, int startNode
 	return cycle;
 }
 
-std::vector<int> full2RegretInitCycle(const ProblemInstance& instance, const std::vector<int>& initialCycle, bool useProfit, bool weighted) {
+std::vector<int> full2RegretInitCycle(const ProblemInstance& instance, const std::vector<int>& initialCycle, bool useProfit, bool weighted, int maxNodesToAdd) {
 
 	vector<int> cycle = initialCycle;
 	vector<bool> visited(instance.numVertices, false);
@@ -102,7 +102,12 @@ std::vector<int> full2RegretInitCycle(const ProblemInstance& instance, const std
 		visited[v] = true;
 	}
 
-    while (cycle.size() < instance.numVertices) {
+	int targetSize = instance.numVertices;
+	if (maxNodesToAdd != -1) {
+		targetSize = std::min(instance.numVertices, (int)initialCycle.size() + maxNodesToAdd);
+	}
+
+    while (cycle.size() < targetSize) {
 		int bestVrtx = -1;
 		int bestInsertIdx = -1;
 

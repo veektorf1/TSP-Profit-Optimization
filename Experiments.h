@@ -26,7 +26,7 @@ struct AlgResult {
 	double maxTimeMs = 0.0;
 	double avgTimeMs = 0.0;
 
-
+	double avgIterations = 0.0;
 	std::vector<int> bestSolution;
 	std::vector<int> worstSolution;
 };
@@ -50,7 +50,7 @@ AlgResult runMultiStartLocalSearchExperiment(const std::string& name, const std:
 
 AlgResult runIteratedLocalSearchExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, double localSearchTimeLimit, int numPerturbations, int runCount);
 
-AlgResult runLocalNeighborhoodSearchExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, DestroyType destroyType, int localSearchTimeLimit, int percentagePerturbations, int runCount);
+AlgResult runLocalNeighborhoodSearchExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, DestroyType destroyType, double localSearchTimeLimit, int percentagePerturbations, int runCount, bool runLocalSearchInLoop);
 
 void saveGreedyStatisticsToCSV(const std::vector<AlgResult>& results, const std::string& filename);
 

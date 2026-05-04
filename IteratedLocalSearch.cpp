@@ -60,13 +60,15 @@ vector<int> perturbateILS(const vector<int>& cycle, const ProblemInstance& insta
     return newCycle;
 }
 
-vector<int> IteratedLocalSearch(const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, double localSearchTimeLimit, int percentagePerturbations) {
+std::pair<vector<int>, int> IteratedLocalSearch(const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, double localSearchTimeLimit, int percentagePerturbations) {
     auto startTime = chrono::high_resolution_clock::now();
     
     vector<int> bestCycle = localSearch(instance, randomSolution(instance.numVertices), searchType, neighborhoodType);
     int bestProfit = evaluate(instance, bestCycle);
+    int iterations = 0;
     
     while(chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now() - startTime).count() < localSearchTimeLimit){
+        iterations++;
         vector<int> perturbatedCycle = perturbateILS(bestCycle, instance, percentagePerturbations);
         vector<int> perturbatedLocalSearch = localSearch(instance, perturbatedCycle, searchType, neighborhoodType);
         int profit = evaluate(instance, perturbatedLocalSearch);
@@ -75,5 +77,5 @@ vector<int> IteratedLocalSearch(const ProblemInstance& instance, SearchType sear
             bestCycle = perturbatedLocalSearch;
         }
     }
-    return bestCycle;
+    return {bestCycle, iterations};
 }
