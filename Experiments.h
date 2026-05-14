@@ -58,3 +58,4 @@ void saveStatisticsToCSV(const std::vector<AlgResult>& results, const std::strin
 
 void saveRoutesToCSV(const std::vector<AlgResult>& results, const std::string& bestFilename, const std::string& worstFilename);
 
+void runGlobalConvexityTest(const ProblemInstance& instance, const std::string& dataset);

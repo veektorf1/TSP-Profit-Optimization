@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+#include <unordered_set>
 
 #include "Ingestion.h"
 #include "RandomSolution.h"
@@ -87,26 +88,37 @@ int startExperiment(string dataset) {
 	// runAndLog(runLocalSearchExperiment("CL - Edge Swap - Random", dataset, instance, SearchType::CL, NeighborhoodType::EDGE_SWAP, false, numRuns));
 
 
-	numRuns = 20;
-	runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
-	// ze statystyk wynika ze sredni czas MLSL to 25205ms dlatego w ILS dajemy wlasnie taki limit zgodnie z trescia zadania
-	//runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 2, numRuns)); 
+
+
+	// Rozszerzenia lokalnego przeszukiwania (lab 4)
 	
-	double mslsAvgTimeMs = allResults.back().avgTimeMs;
-	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 5, numRuns));
+	
+	// numRuns = 20;
+	// runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
+	// // ze statystyk wynika ze sredni czas MLSL to 25205ms dlatego w ILS dajemy wlasnie taki limit zgodnie z trescia zadania
+	// //runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 25205, 2, numRuns)); 
+	
+	// double mslsAvgTimeMs = allResults.back().avgTimeMs;
+	// runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 5, numRuns));
 	
 
-	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% RANDOM", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::RANDOM_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
-	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% WORST", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_EDGES_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
+	// runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% RANDOM", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::RANDOM_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
+	// runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% WORST", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_EDGES_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
 
-	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% RANDOM", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::RANDOM_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
-	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% WORST", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_EDGES_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
+	// runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% RANDOM", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::RANDOM_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
+	// runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% WORST", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_EDGES_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
 
 
-	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% WORST Subpath Removal", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
+	// runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% WORST Subpath Removal", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
 
-	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% WORST Subpath Removal", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
+	// runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% WORST Subpath Removal", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
 
+
+
+	
+	
+	// Testy globalnej wypukłości
+	runGlobalConvexityTest(instance, dataset);
 
 	cout << "Saving results to disk...\n";
 
@@ -125,6 +137,83 @@ int startExperiment(string dataset) {
 
 	return 0;
 
+}
+
+void runGlobalConvexityTest(const ProblemInstance& instance, const string& dataset) {
+	// Generating x_best using LNS (with LS) Subpath Removal for 60s
+	cout << "Generating x_best using LNS (with LS) Subpath Removal for 60s...\n";
+	auto lnsResult = LargeNeighborhoodLocalSearch(
+		instance,
+		SearchType::STEEPEST,
+		NeighborhoodType::EDGE_SWAP,
+		DestroyType::WORST_SUBPATH_REMOVAL,
+		60000, // 60 seconds
+		30,
+		true
+	);
+	vector<int> x_best = lnsResult.first;
+	cout << "Najlpszy: " << evaluate(instance, x_best) << endl;
+
+	// Generating 1000 random local optima
+	cout << "Generating 1000 random local optima...\n";
+	vector<vector<int>> localOptima;
+	vector<int> localOptimaScores;
+	for(int i = 0; i < 1000; i++) {
+		vector<int> x_losowe = randomSolution(instance.numVertices);
+		vector<int> x_lo = localSearch(instance, x_losowe, SearchType::GREEDY, NeighborhoodType::EDGE_SWAP);
+		localOptima.push_back(x_lo);
+		localOptimaScores.push_back(evaluate(instance, x_lo));
+		if ((i + 1) % 100 == 0) {
+			cout << "Generated " << (i + 1) << "/1000 local optima.\n";
+		}
+	}
+
+	// Calculating similarities
+	cout << "Calculating similarities...\n";
+	vector<unordered_set<int>> optimaNodeSets(1000);
+	vector<unordered_set<long long>> optimaEdgeSets(1000);
+
+	for(int i = 0; i < 1000; i++) {
+		optimaNodeSets[i] = unordered_set<int>(localOptima[i].begin(), localOptima[i].end());
+		optimaEdgeSets[i] = getEdgeSet(localOptima[i]);
+	}
+	
+	unordered_set<int> bestNodeSet(x_best.begin(), x_best.end());
+	unordered_set<long long> bestEdgeSet = getEdgeSet(x_best);
+
+	vector<int> simNodesBest(1000), simEdgesBest(1000);
+	vector<double> simNodesAvg(1000), simEdgesAvg(1000);
+
+	for(int i = 0; i < 1000; i++) {
+		simNodesBest[i] = similarityVertices(localOptima[i], bestNodeSet);
+		simEdgesBest[i] = similarityEdges(localOptima[i], bestEdgeSet);
+
+		double sumNodes = 0;
+		double sumEdges = 0;
+		for(int j = 0; j < 1000; j++) {
+			if (i == j) continue;
+			sumNodes += similarityVertices(localOptima[i], optimaNodeSets[j]);
+			sumEdges += similarityEdges(localOptima[i], optimaEdgeSets[j]);
+		}
+		simNodesAvg[i] = sumNodes / 999.0;
+		simEdgesAvg[i] = sumEdges / 999.0;
+	}
+
+	// Saving results to file
+	string convFolder = "results/" + dataset;
+	filesystem::create_directories(convFolder);
+	string convPath = convFolder + "/" + dataset + "_convexity.csv";
+	
+	ofstream convOut(convPath);
+	convOut << "wartosc_funkcji_celu;pod_best_wierzcholki;pod_srednie_wierzcholki;pod_best_krawedzie;pod_srednie_krawedzie\n";
+	for(int i = 0; i < 1000; i++) {
+		convOut << localOptimaScores[i] << ";" 
+				<< simNodesBest[i] << ";" 
+				<< simNodesAvg[i] << ";" 
+				<< simEdgesBest[i] << ";" 
+				<< simEdgesAvg[i] << "\n";
+	}
+	cout << "Convexity test done. Results saved to " << convPath << "\n\n";
 }
 
 

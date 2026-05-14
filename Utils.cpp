@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include <algorithm>
 using namespace std;
 
 int evaluate(const ProblemInstance& instance, const std::vector<int>& solution) {
@@ -70,4 +71,36 @@ int calculateCycleLength(const ProblemInstance& instance, const vector<int>& cyc
 	}
 
 	return totalDistance;
+}
+
+unordered_set<long long> getEdgeSet(const vector<int>& p) {
+    unordered_set<long long> edges;
+    int n = p.size();
+    for (int i = 0; i < n; ++i) {
+        long long u = p[i];
+        long long v = p[(i + 1) % n];
+        if (u > v) swap(u, v);
+        edges.insert((u << 32) | v);
+    }
+    return edges;
+}
+
+int similarityVertices(const vector<int>& a, const unordered_set<int>& set_b) {
+    int count = 0;
+    for (int v : a) {
+        if (set_b.count(v)) count++;
+    }
+    return count;
+}
+
+int similarityEdges(const vector<int>& a, const unordered_set<long long>& edges_b) {
+    int count = 0;
+    int n = a.size();
+    for (int i = 0; i < n; ++i) {
+        long long u = a[i];
+        long long v = a[(i + 1) % n];
+        if (u > v) swap(u, v);
+        if (edges_b.count((u << 32) | v)) count++;
+    }
+    return count;
 }
