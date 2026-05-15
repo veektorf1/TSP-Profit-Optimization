@@ -134,6 +134,7 @@
     <ClCompile Include="GreedyCycle.cpp" />
     <ClCompile Include="Ingestion.cpp" />
     <ClCompile Include="IteratedLocalSearch.cpp" />
+    <ClCompile Include="HybridEvolutionaryAlgorithm.cpp" />
     <ClCompile Include="LargeNeighborhoodLocalSearch.cpp" />
     <ClCompile Include="LocalSearch.cpp" />
     <ClCompile Include="LocalSearchCL.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="GreedyCycle.h" />
     <ClInclude Include="Ingestion.h" />
     <ClInclude Include="IteratedLocalSearch.h" />
+    <ClInclude Include="HybridEvolutionaryAlgorithm.h" />
     <ClInclude Include="LargeNeighborhoodLocalSearch.h" />
     <ClInclude Include="LocalSearch.h" />
     <ClInclude Include="LocalSearchCL.h" />
