@@ -16,6 +16,7 @@
 #include "IteratedLocalSearch.h"
 #include "LargeNeighborhoodLocalSearch.h"
 #include "HybridEvolutionaryAlgorithm.h"
+#include "CustomOptimizationAlgorithm.h"
 #include <chrono>
 
 
@@ -126,35 +127,57 @@ int startExperiment(string dataset) {
 	
 	
 
-	// Heurystyka zachłanna (Konstrukcyjna): 2-Regret z zyskiem + faza Phase Two Removal, bez żadnego lokalnego przeszukiwania.
+	// // Heurystyka zachłanna (Konstrukcyjna): 2-Regret z zyskiem + faza Phase Two Removal, bez żadnego lokalnego przeszukiwania.
+	// runAndLog(run2RegretExperiment("2 - Regret (z)", dataset, instance, true, false, 200));
+
+	// // Lokalne Przeszukiwanie (LS): Pojedyncze uruchomienie Steepest z sąsiedztwem Edge Swap z losowego rozwiązania startowego.
+	// runAndLog(runLocalSearchExperiment("LS (Steepest - Edge Swap - Random)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, false, 100));
+
+
+	// numRuns = 20;
+
+	// // 3. MSLS (Multiple Start Local Search)
+	// runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
+	// double mslsAvgTimeMs = allResults.back().avgTimeMs;
+
+	// // 4. ILS (Iterated Local Search)
+	// runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 5, numRuns));
+
+	// // 5. LNS (Large Neighborhood Search)
+	// runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% WORST Subpath", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
+	// runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% WORST Subpath", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
+
+	// // Hybrid Evolutionary Algorithm (HAE)
+	// runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op1 (bez LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 1, false, numRuns));
+	// runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op1 (z LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 1, true, numRuns));
+	
+	// runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op2 (bez LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 2, false, numRuns));
+	// runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op2 (z LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 2, true, numRuns));
+	
+	// runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op3 (bez LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 3, false, numRuns));
+	// runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op3 (z LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 3, true, numRuns));
+
+	
+	// Custom Optimization Method 
+
 	runAndLog(run2RegretExperiment("2 - Regret (z)", dataset, instance, true, false, 200));
-
-	// Lokalne Przeszukiwanie (LS): Pojedyncze uruchomienie Steepest z sąsiedztwem Edge Swap z losowego rozwiązania startowego.
 	runAndLog(runLocalSearchExperiment("LS (Steepest - Edge Swap - Random)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, false, 100));
-
 
 	numRuns = 20;
 
-	// 3. MSLS (Multiple Start Local Search)
 	runAndLog(runMultiStartLocalSearchExperiment("MSLS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, 200, numRuns));
 	double mslsAvgTimeMs = allResults.back().avgTimeMs;
 
-	// 4. ILS (Iterated Local Search)
 	runAndLog(runIteratedLocalSearchExperiment("ILS - Steepest - Edge Swap", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 5, numRuns));
 
-	// 5. LNS (Large Neighborhood Search)
 	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (z LS) - Steepest - Edge Swap - 30% WORST Subpath", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, true));
 	runAndLog(runLocalNeighborhoodSearchExperiment("LNS (bez LS) - Steepest - Edge Swap - 30% WORST Subpath", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, DestroyType::WORST_SUBPATH_REMOVAL, mslsAvgTimeMs, 30, numRuns, false));
 
-	// Hybrid Evolutionary Algorithm (HAE)
-	runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op1 (bez LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 1, false, numRuns));
 	runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op1 (z LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 1, true, numRuns));
-	
-	runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op2 (bez LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 2, false, numRuns));
+	runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op1 (z LS LM)", dataset, instance, SearchType::STEEPEST_LM, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 1, true, numRuns));
 	runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op2 (z LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 2, true, numRuns));
 	
-	runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op3 (bez LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 3, false, numRuns));
-	runAndLog(runHybridEvolutionaryAlgorithmExperiment("HAE Op3 (z LS)", dataset, instance, SearchType::STEEPEST, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 3, true, numRuns));
+	runAndLog(runCustomOptimizationAlgorithmExperiment("Custom Method", dataset, instance, SearchType::STEEPEST_LM, NeighborhoodType::EDGE_SWAP, mslsAvgTimeMs, 1, true, 0.20, true, numRuns));
 
 	cout << "Saving results to disk...\n";
 
@@ -676,6 +699,53 @@ AlgResult runHybridEvolutionaryAlgorithmExperiment(const std::string& name, cons
 		auto startTime = chrono::high_resolution_clock::now();
 
 		auto resultPair = HybridEvolutionaryAlgorithm(instance, searchType, neighborhoodType, localSearchTimeLimit, operatorType, useLocalSearchAfterRecombination);
+		vector<int> finalSolution = resultPair.first;
+		int iterations = resultPair.second;
+
+		auto endTime = chrono::high_resolution_clock::now();
+		auto durationUs = chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
+		double durationMs = durationUs / 1000.0;
+		if (durationMs < result.minTimeMs) result.minTimeMs = durationMs;
+		if (durationMs > result.maxTimeMs) result.maxTimeMs = durationMs;
+
+		int score = evaluate(instance, finalSolution);
+
+		if (score < result.minScore) {
+			result.minScore = score;
+			result.worstSolution = finalSolution;
+		}
+		if (score > result.maxScore) {
+			result.maxScore = score;
+			result.bestSolution = finalSolution;
+		}
+
+		sumScore += score;
+		sumTimeUs += durationUs;
+		result.avgIterations += iterations;
+	}
+
+	result.avgScore = static_cast<double>(sumScore) / runCount;
+	result.avgTimeMs = static_cast<double>(sumTimeUs) / (runCount * 1000.0); 
+	result.avgIterations = result.avgIterations / runCount;
+
+	return result;
+}
+
+AlgResult runCustomOptimizationAlgorithmExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, double localSearchTimeLimit, int operatorType, bool useLocalSearchAfterRecombination, double mutationProbability, bool useTournamentSelection, int runCount) {
+	cout << "Running Custom Optimization Algorithm: " << name << " on dataset: " << dataset << endl;
+
+	AlgResult result;
+	result.name = name;
+	result.dataset = dataset;
+
+	long long sumScore = 0;
+	long long sumTimeUs = 0; 
+
+	for (int i = 0; i < runCount; i++) {
+		
+		auto startTime = chrono::high_resolution_clock::now();
+
+		auto resultPair = CustomOptimizationAlgorithm(instance, searchType, neighborhoodType, localSearchTimeLimit, operatorType, useLocalSearchAfterRecombination, mutationProbability, useTournamentSelection);
 		vector<int> finalSolution = resultPair.first;
 		int iterations = resultPair.second;
 

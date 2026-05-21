@@ -80,8 +80,10 @@ void localSearchGreedy(const ProblemInstance& instance, vector<int>& cycle, vect
         vector<Move> neighborhood = generateNeighborhoodMoves(cycle, inCycle, instance.numVertices, nType);
         int M = neighborhood.size();
 
-        static random_device rd;
-        static mt19937 gen(rd());
+        static thread_local mt19937 gen([]() {
+            random_device rd;
+            return rd();
+        }());
         shuffle(neighborhood.begin(), neighborhood.end(), gen);
 
 

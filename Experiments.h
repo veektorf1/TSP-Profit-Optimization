@@ -6,6 +6,7 @@
 #include "2Regret.h"
 #include "LargeNeighborhoodLocalSearch.h"
 #include "IteratedLocalSearch.h"
+#include "CustomOptimizationAlgorithm.h"
 
 
 struct AlgResult {
@@ -53,6 +54,8 @@ AlgResult runIteratedLocalSearchExperiment(const std::string& name, const std::s
 AlgResult runLocalNeighborhoodSearchExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, DestroyType destroyType, double localSearchTimeLimit, int percentagePerturbations, int runCount, bool runLocalSearchInLoop);
 
 AlgResult runHybridEvolutionaryAlgorithmExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, double localSearchTimeLimit, int operatorType, bool useLocalSearchAfterRecombination, int runCount);
+
+AlgResult runCustomOptimizationAlgorithmExperiment(const std::string& name, const std::string& dataset, const ProblemInstance& instance, SearchType searchType, NeighborhoodType neighborhoodType, double localSearchTimeLimit, int operatorType, bool useLocalSearchAfterRecombination, double mutationProbability, bool useTournamentSelection, int runCount);
 
 void saveGreedyStatisticsToCSV(const std::vector<AlgResult>& results, const std::string& filename);
 

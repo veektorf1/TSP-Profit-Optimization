@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -120,6 +121,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -135,6 +137,7 @@
     <ClCompile Include="Ingestion.cpp" />
     <ClCompile Include="IteratedLocalSearch.cpp" />
     <ClCompile Include="HybridEvolutionaryAlgorithm.cpp" />
+    <ClCompile Include="CustomOptimizationAlgorithm.cpp" />
     <ClCompile Include="LargeNeighborhoodLocalSearch.cpp" />
     <ClCompile Include="LocalSearch.cpp" />
     <ClCompile Include="LocalSearchCL.cpp" />
@@ -153,6 +156,7 @@
     <ClInclude Include="Ingestion.h" />
     <ClInclude Include="IteratedLocalSearch.h" />
     <ClInclude Include="HybridEvolutionaryAlgorithm.h" />
+    <ClInclude Include="CustomOptimizationAlgorithm.h" />
     <ClInclude Include="LargeNeighborhoodLocalSearch.h" />
     <ClInclude Include="LocalSearch.h" />
     <ClInclude Include="LocalSearchCL.h" />

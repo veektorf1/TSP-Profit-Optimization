@@ -7,8 +7,10 @@
 using namespace std;
 
 vector<int> randomSolution(int numVertices) {
-    static random_device rd;
-    static mt19937 gen(rd()); 
+    static thread_local mt19937 gen([]() {
+        random_device rd;
+        return rd();
+    }());
 
     uniform_int_distribution<> distK(2, numVertices);
     int k = distK(gen);
